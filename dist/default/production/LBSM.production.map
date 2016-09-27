@@ -16,6 +16,8 @@ Command:
   -L/Applications/microchip/xc16/v1.26/bin/bin/../../support/dsPIC33E/gld \
   -L/Applications/microchip/xc16/v1.26/bin/bin/../../support/dsPIC33F/gld \
   build/default/production/main.o \
+  build/default/production/delay.o \
+  build/default/production/keyboard.o \
   --defsym=__MPLAB_BUILD=1 \
   -Tp30F4011.gld.00 \
   --stack=16 \
@@ -56,25 +58,20 @@ Program Memory  [Origin = 0x100, Length = 0x7f00]
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x100                0xac           0x102  (258)
-.text                        0x1ac                0x4c            0x72  (114)
-.dinit                       0x1f8                 0x2             0x3  (3)
-.shared.dinit                0x1fa                 0x2             0x3  (3)
+.text                        0x1ac               0x128           0x1bc  (444)
+.dinit                       0x2d4                 0xa             0xf  (15)
+.shared.dinit                0x2de                 0x2             0x3  (3)
 
-                 Total program memory used (bytes):          0x17a  (378) <1%
-
-
-Ivt Memory  [Origin = 0x4, Length = 0x7c]
-
-section                    address   length (PC units)   length (bytes) (dec)
--------                    -------   -----------------   --------------------
+                 Total program memory used (bytes):          0x2d0  (720) 1%
 
 
 Data Memory  [Origin = 0x800, Length = 0x800]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
+.ndata                       0x800                   0             0x2  (2)
 
-                 Total data memory used (bytes):              0  (0) 
+                 Total data memory used (bytes):            0x2  (2) <1%
 
 
 Dynamic Memory Usage
@@ -82,30 +79,56 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                        0x800                               0x800  (2048)
+stack                        0x802                               0x7fe  (2046)
 
-                 Maximum dynamic memory (bytes):          0x800  (2048)
+                 Maximum dynamic memory (bytes):          0x7fe  (2046)
 
+
+External Symbols in Data Memory (by address):
+
+                    0x0800                  _TOTAL_COLUMNS
+
+External Symbols in Data Memory (by name):
+
+                    0x0800                  _TOTAL_COLUMNS
 
 External Symbols in Program Memory (by address):
 
                   0x000100                  __resetPRI
                   0x00012c                  __psv_init
-                  0x00013c                  __data_init
                   0x00013c                  __data_init_standard
+                  0x00013c                  __data_init
                   0x0001a8                  __DefaultInterrupt
-                  0x0001ac                  _main
-                  0x0001e0                  _wait
+                  0x0001ac                  _initKeyboard
+                  0x0001c0                  _readKey
+                  0x000224                  _setColumn
+                  0x000252                  _main
+                  0x000286                  _wait
+                  0x00029e                  _Delay3Tcy
+                  0x0002a0                  _Delay10us
+                  0x0002a8                  _Delay20us
+                  0x0002b0                  _Delay150us
+                  0x0002b8                  _Delay5ms
+                  0x0002c0                  _Delay15ms
 
 External Symbols in Program Memory (by name):
 
+                  0x0002a0                  _Delay10us
+                  0x0002b0                  _Delay150us
+                  0x0002c0                  _Delay15ms
+                  0x0002a8                  _Delay20us
+                  0x00029e                  _Delay3Tcy
+                  0x0002b8                  _Delay5ms
                   0x0001a8                  __DefaultInterrupt
                   0x00013c                  __data_init
                   0x00013c                  __data_init_standard
                   0x00012c                  __psv_init
                   0x000100                  __resetPRI
-                  0x0001ac                  _main
-                  0x0001e0                  _wait
+                  0x0001ac                  _initKeyboard
+                  0x000252                  _main
+                  0x0001c0                  _readKey
+                  0x000224                  _setColumn
+                  0x000286                  _wait
 
 Memory Configuration
 
@@ -133,6 +156,8 @@ FICD             0xf8000c           0x000002
 Linker script and memory map
 
 LOAD build/default/production/main.o
+LOAD build/default/production/delay.o
+LOAD build/default/production/keyboard.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD p30F4011
 LOAD /Applications/microchip/xc16/v1.26/bin/bin/../../lib/libfx-elf.a
@@ -226,26 +251,34 @@ userdata
 .comment
  *(.comment)
 
-.debug_info       0x000000        0x324
+.debug_info       0x000000        0x832
  *(.debug_info)
  .debug_info      0x000000        0x324 build/default/production/main.o
+ .debug_info      0x000324         0x7c build/default/production/delay.o
+ .debug_info      0x0003a0        0x492 build/default/production/keyboard.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000         0xb6
+.debug_abbrev     0x000000        0x1b7
  *(.debug_abbrev)
  .debug_abbrev    0x000000         0xb6 build/default/production/main.o
+ .debug_abbrev    0x0000b6         0x14 build/default/production/delay.o
+ .debug_abbrev    0x0000ca         0xed build/default/production/keyboard.o
 
-.debug_line       0x000000         0x91
+.debug_line       0x000000        0x187
  *(.debug_line)
  .debug_line      0x000000         0x91 build/default/production/main.o
+ .debug_line      0x000091         0x40 build/default/production/delay.o
+ .debug_line      0x0000d1         0xb6 build/default/production/keyboard.o
 
-.debug_frame      0x000000         0x4c
+.debug_frame      0x000000         0xb4
  *(.debug_frame)
  .debug_frame     0x000000         0x4c build/default/production/main.o
+ .debug_frame     0x00004c         0x68 build/default/production/keyboard.o
 
-.debug_str        0x000000         0x13
+.debug_str        0x000000         0x48
  *(.debug_str)
  .debug_str       0x000000         0x13 build/default/production/main.o
+ .debug_str       0x000013         0x35 build/default/production/keyboard.o
 
 .debug_loc
  *(.debug_loc)
@@ -254,18 +287,24 @@ userdata
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x24
+                  0x000000         0x73
  *(.debug_pubnames)
  .debug_pubnames
                   0x000000         0x24 build/default/production/main.o
+ .debug_pubnames
+                  0x000024         0x4f build/default/production/keyboard.o
 
 .debug_ranges
  *(.debug_ranges)
 
-.debug_aranges    0x000000         0x18
+.debug_aranges    0x000000         0x48
  *(.debug_aranges)
  .debug_aranges
                   0x000000         0x18 build/default/production/main.o
+ .debug_aranges
+                  0x000018         0x18 build/default/production/delay.o
+ .debug_aranges
+                  0x000030         0x18 build/default/production/keyboard.o
                     0x0000                  WREG0 = 0x0
                     0x0000                  _WREG0 = 0x0
                     0x0002                  WREG1 = 0x2
@@ -979,26 +1018,45 @@ LOAD data_init
 LOAD shared_data_init
 
 .debug_pubtypes
-                  0x000018         0x4e
+                  0x000048         0xda
  .debug_pubtypes
-                  0x000018         0x4e build/default/production/main.o
+                  0x000048         0x4e build/default/production/main.o
+ .debug_pubtypes
+                  0x000096         0x8c build/default/production/keyboard.o
 
 __c30_signature
-                  0x000066         0x12
+                  0x000122         0x18
  __c30_signature
-                  0x000066          0x6 build/default/production/main.o
+                  0x000122          0x6 build/default/production/main.o
  __c30_signature
-                  0x00006c          0x6 /Applications/microchip/xc16/v1.26/bin/bin/../../lib/liblega-pic30-elf.a(crt0_standard.o)
+                  0x000128          0x6 build/default/production/keyboard.o
  __c30_signature
-                  0x000072          0x6 /Applications/microchip/xc16/v1.26/bin/bin/../../lib/liblega-pic30-elf.a(data_init_standard.o)
+                  0x00012e          0x6 /Applications/microchip/xc16/v1.26/bin/bin/../../lib/liblega-pic30-elf.a(crt0_standard.o)
+ __c30_signature
+                  0x000134          0x6 /Applications/microchip/xc16/v1.26/bin/bin/../../lib/liblega-pic30-elf.a(data_init_standard.o)
 
-.text             0x0001ac         0x4c
- .text            0x0001ac         0x4c build/default/production/main.o
-                  0x0001ac                  _main
-                  0x0001e0                  _wait
+.ndata              0x0800          0x2
+ .ndata             0x0800          0x2 build/default/production/keyboard.o
+                    0x0800                  _TOTAL_COLUMNS
 
-.dinit            0x0001f8          0x2
- .dinit           0x0001f8          0x2 data_init
+.text             0x0001ac        0x128
+ .text            0x0001ac         0xa6 build/default/production/keyboard.o
+                  0x0001ac                  _initKeyboard
+                  0x0001c0                  _readKey
+                  0x000224                  _setColumn
+ .text            0x000252         0x4c build/default/production/main.o
+                  0x000252                  _main
+                  0x000286                  _wait
+ .text            0x00029e         0x36 build/default/production/delay.o
+                  0x00029e                  _Delay3Tcy
+                  0x0002a0                  _Delay10us
+                  0x0002a8                  _Delay20us
+                  0x0002b0                  _Delay150us
+                  0x0002b8                  _Delay5ms
+                  0x0002c0                  _Delay15ms
 
-.shared.dinit     0x0001fa          0x2
- .shared.dinit    0x0001fa          0x2 shared_data_init
+.dinit            0x0002d4          0xa
+ .dinit           0x0002d4          0xa data_init
+
+.shared.dinit     0x0002de          0x2
+ .shared.dinit    0x0002de          0x2 shared_data_init
