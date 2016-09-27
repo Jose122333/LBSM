@@ -16,6 +16,7 @@
 #define INPUT 1
 #define OUTPUT 0
 
+
 /*
 TRIS = INPUT O OUTPUT
 PORT = LECTURA
