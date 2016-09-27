@@ -21,7 +21,7 @@ int main(void) {
     unsigned int i;
 
     LED0_TRIS = OUTPUT;
-    
+
     LED0 = OFF;
 
     //We light up the first led
